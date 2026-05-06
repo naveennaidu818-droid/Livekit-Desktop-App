@@ -1,0 +1,89 @@
+name: Build Desktop Apps
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  windows:
+    name: Windows EXE
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows installer and portable app
+        run: npm run dist:win
+
+      - name: Upload Windows files
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: release/*.exe
+
+  mac:
+    name: macOS DMG
+    runs-on: macos-latest
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build macOS DMG and ZIP
+        run: npm run dist:mac
+
+      - name: Upload macOS files
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: |
+            release-mac/*.dmg
+            release-mac/*.zip
+
+  linux:
+    name: Linux AppImage and DEB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Linux AppImage and DEB
+        run: npm run dist:linux
+
+      - name: Upload Linux files
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          path: |
+            release-linux/*.AppImage
+            release-linux/*.deb

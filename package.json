@@ -1,0 +1,149 @@
+{
+  "name": "office-meetings-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Naveen Kandula",
+  "main": "electron/main.js",
+  "description": "Vitel Global Office Meetings",
+  "scripts": {
+    "dev": "electron .",
+    "icon": "node electron/generate-icon.js",
+    "clean": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (Test-Path release-build) { Remove-Item release-build -Recurse -Force }; if (!(Test-Path release)) { New-Item -ItemType Directory -Path release | Out-Null }; Remove-Item release\\*.exe, release\\*.dmg, release\\*.zip, release\\*.AppImage, release\\*.deb, release\\*.rpm, release\\*.blockmap, release\\latest*.yml -Force -ErrorAction SilentlyContinue\"",
+    "dist": "npm run dist:win",
+    "dist:win": "npm run icon && npm run clean && electron-builder --win --config.directories.output=release-build && powershell -NoProfile -ExecutionPolicy Bypass -Command \"Copy-Item release-build\\*.exe release -Force; if (Test-Path release-build) { Remove-Item release-build -Recurse -Force }\"",
+    "dist:mac": "npm run icon && electron-builder --mac --config.directories.output=release-mac",
+    "dist:linux": "npm run icon && electron-builder --linux --config.directories.output=release-linux",
+    "dist:all": "npm run icon && electron-builder -mwl",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^36.2.1",
+    "electron-builder": "^25.1.8",
+    "png-to-ico": "^3.0.1",
+    "png2icons": "^2.0.1",
+    "sharp": "^0.34.5"
+  },
+  "build": {
+    "appId": "com.officemeetings.desktop",
+    "productName": "Office Meetings Desktop",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "build/icon.png",
+      "build/icon.ico",
+      "build/icon.icns",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.business",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "NSCameraUsageDescription": "Office Meetings Desktop needs camera access for video meetings.",
+        "NSMicrophoneUsageDescription": "Office Meetings Desktop needs microphone access for meeting audio.",
+        "NSScreenCaptureDescription": "Office Meetings Desktop needs screen recording access to share your screen during meetings."
+      },
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}-mac.${ext}"
+    },
+    "dmg": {
+      "artifactName": "${productName}-${version}-${arch}-mac.${ext}",
+      "title": "Office Meetings Desktop"
+    },
+    "linux": {
+      "icon": "build/icons",
+      "category": "Network;VideoConference;",
+      "synopsis": "Vitel Global Office Meetings",
+      "description": "Vitel Global Office Meetings desktop app",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}-linux.${ext}",
+      "maintainer": "Vitel Global"
+    },
+    "nsis": {
+      "artifactName": "${productName}-${version}-${arch}-installer.${ext}",
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "installerHeaderIcon": "icon.ico",
+      "shortcutName": "Office Meetings Desktop",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "removePackageKeywords": true,
+    "nodeGypRebuild": false,
+    "npmRebuild": false,
+    "publish": null,
+    "electronLanguages": [
+      "en-US"
+    ],
+    "afterPack": "./electron/afterPack.js",
+    "portable": {
+      "artifactName": "${productName}-${version}-${arch}-portable.${ext}"
+    }
+  }
+}
