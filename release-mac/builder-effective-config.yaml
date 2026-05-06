@@ -1,0 +1,88 @@
+directories:
+  output: release-mac
+  buildResources: build
+appId: com.officemeetings.desktop
+productName: Office Meetings Desktop
+asar: true
+files:
+  - filter:
+      - electron/**/*
+      - build/icon.png
+      - build/icon.ico
+      - build/icon.icns
+      - package.json
+extraResources:
+  - from: build/icon.ico
+    to: icon.ico
+  - from: build/icon.png
+    to: icon.png
+win:
+  icon: build/icon.ico
+  signAndEditExecutable: false
+  verifyUpdateCodeSignature: false
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+mac:
+  icon: build/icon.icns
+  category: public.app-category.business
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  extendInfo:
+    NSCameraUsageDescription: Office Meetings Desktop needs camera access for video meetings.
+    NSMicrophoneUsageDescription: Office Meetings Desktop needs microphone access for meeting audio.
+    NSScreenCaptureDescription: Office Meetings Desktop needs screen recording access to share your screen during meetings.
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
+      arch:
+        - x64
+        - arm64
+  artifactName: ${productName}-${version}-${arch}-mac.${ext}
+dmg:
+  artifactName: ${productName}-${version}-${arch}-mac.${ext}
+  title: Office Meetings Desktop
+linux:
+  icon: build/icons
+  category: Network;VideoConference;
+  synopsis: Vitel Global Office Meetings
+  description: Vitel Global Office Meetings desktop app
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-${arch}-linux.${ext}
+  maintainer: Vitel Global
+nsis:
+  artifactName: ${productName}-${version}-${arch}-installer.${ext}
+  installerIcon: icon.ico
+  uninstallerIcon: icon.ico
+  installerHeaderIcon: icon.ico
+  shortcutName: Office Meetings Desktop
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+compression: maximum
+removePackageScripts: true
+removePackageKeywords: true
+nodeGypRebuild: false
+npmRebuild: false
+publish: null
+electronLanguages:
+  - en-US
+afterPack: ./electron/afterPack.js
+portable:
+  artifactName: ${productName}-${version}-${arch}-portable.${ext}
+electronVersion: 36.9.5
