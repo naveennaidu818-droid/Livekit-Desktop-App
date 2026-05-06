@@ -42,7 +42,8 @@ exports.default = async function afterPack(context) {
     const iconPath = path.join(__dirname, "..", "build", "icon.ico");
 
     if (!rcedit) {
-      throw new Error("Could not find rcedit-x64.exe to apply the Windows app icon.");
+      console.warn("Could not find rcedit-x64.exe; skipping extra Windows metadata update.");
+      return;
     }
 
     execFileSync(
