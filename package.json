@@ -21,6 +21,7 @@
     "electron-builder": "^25.1.8",
     "png-to-ico": "^3.0.1",
     "png2icons": "^2.0.1",
+    "rcedit": "^5.0.2",
     "sharp": "^0.34.5"
   },
   "build": {
@@ -124,9 +125,9 @@
     },
     "nsis": {
       "artifactName": "${productName}-${version}-${arch}-installer.${ext}",
-      "installerIcon": "icon.ico",
-      "uninstallerIcon": "icon.ico",
-      "installerHeaderIcon": "icon.ico",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
       "shortcutName": "Office Meetings Desktop",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,

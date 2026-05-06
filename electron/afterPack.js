@@ -3,6 +3,19 @@ const path = require("path");
 const { execFileSync } = require("child_process");
 
 function findRcedit() {
+  const packagedRcedit = path.join(
+    __dirname,
+    "..",
+    "node_modules",
+    "rcedit",
+    "bin",
+    "rcedit-x64.exe"
+  );
+
+  if (fs.existsSync(packagedRcedit)) {
+    return packagedRcedit;
+  }
+
   const cacheDir = path.join(process.env.LOCALAPPDATA || "", "electron-builder", "Cache", "winCodeSign");
 
   if (!fs.existsSync(cacheDir)) {
@@ -42,8 +55,7 @@ exports.default = async function afterPack(context) {
     const iconPath = path.join(__dirname, "..", "build", "icon.ico");
 
     if (!rcedit) {
-      console.warn("Could not find rcedit-x64.exe; skipping extra Windows metadata update.");
-      return;
+      throw new Error("Could not find rcedit-x64.exe to apply the Windows app icon.");
     }
 
     execFileSync(
